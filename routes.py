@@ -41,10 +41,26 @@ def new_student():
 @app.route('/edit/<int:sid>', methods=['POST', 'GET'])
 def edit_student(sid):
     # if request.method=='POST':
-    item = students.query.filter_by(id = sid)
-    name=students.query(name).filter_by(id = sid)
-    city= students.query(city).filter_by(id = sid)
-    return render_template('edit.html', name=name, city=city)
+    # item = students.query.filter_by(id = sid)
+    
+    # name=db.session.query(students.name).filter_by(id=sid).first()
+    # city= db.session.query(students.city).filter_by(id=sid).first()
+    if request.method =='POST':
+        stud=students.query.get(sid)
+        name=request.form['name']
+        city=request.form['city']
+        stud.name=name
+        stud.city=city
+        db.session.commit()
+        return redirect(url_for('show_all'))
+    return render_template('edit.html', s=students.query.filter_by(id=sid).first())
+
+@app.route('/update/<int:id>', methods=['POST'])
+def update_students(sid):
+    name=db.session.query(students.name).filter_by(id=sid).first()
+    city= db.session.query(students.city).filter_by(id=sid).first()
+
+    return redirect(url_for('show_all'))
 
 @app.route('/delete/<int:sid>')
 def delete_student(sid):
